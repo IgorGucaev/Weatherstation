@@ -1,4 +1,5 @@
-﻿using Station.Common.Enums;
+﻿using Station.Common.Contracts;
+using Station.Common.Enums;
 
 namespace Station.Common.Classes
 {

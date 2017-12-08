@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Station.Common.Infrastructure
+namespace Station.Common.Infrastructure.Repositories
 {
-    public class CommonRepository<TDbContext, TEntity, TKey> : ICommonRepository<TEntity>
+    public class CommonContextBasedRepository<TDbContext, TEntity, TKey> : ICommonRepository<TEntity>
           where TDbContext : DbContext, new()
           where TEntity : Entity<TKey>
     {
@@ -18,7 +18,7 @@ namespace Station.Common.Infrastructure
         public TDbContext DbContext { get; protected set; }
         public DbSet<TEntity> DbSet { get; protected set; }
 
-        public CommonRepository(TDbContext dbContext)
+        public CommonContextBasedRepository(TDbContext dbContext)
         {
             if (dbContext == null)
                 throw new ArgumentNullException("dbContext");
@@ -35,9 +35,7 @@ namespace Station.Common.Infrastructure
         { get { return this.DbSet; } }
 
 
-
         #region IRepository<T>
-
         protected virtual int SaveChanges()
         {
             return DbContext.SaveChanges();

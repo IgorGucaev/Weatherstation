@@ -1,4 +1,4 @@
-﻿namespace Station.Common.Classes
+﻿namespace Station.Common.Contracts
 {
     public interface IDependencyRegistrator
     {

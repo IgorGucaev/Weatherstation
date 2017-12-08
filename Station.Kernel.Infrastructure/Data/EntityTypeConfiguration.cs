@@ -6,7 +6,6 @@ namespace Station.Kernel.Infrastructure.Data
     public abstract class EntityTypeConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : class
     {
         public abstract void Configure(EntityTypeBuilder<TEntity> builder);
- 
     }
 
     public static class ModelBuilderExtensions
@@ -16,5 +15,4 @@ namespace Station.Kernel.Infrastructure.Data
             configuration.Configure(modelBuilder.Entity<TEntity>());
         }
     }
-
 }

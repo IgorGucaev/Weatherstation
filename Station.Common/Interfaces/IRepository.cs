@@ -8,10 +8,6 @@ namespace Station.Common.Interfaces
     public interface IRepository<T> : IRepository
         where T : class
     {
-        //bool IsAutoSave { get; }
-
-        //int SaveChanges();
-
         IEnumerable<T> GetAll();
 
         T Get(object id);

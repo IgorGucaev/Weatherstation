@@ -4,6 +4,7 @@ using Station.Modules.Signals.Infrastructure;
 using Station.Modules.Signals.Domain.Contracts;
 using Station.Modules.Signals.Domain.Contracts.Services;
 using Station.Modules.Signals.Domain.Services;
+using Station.Common.Contracts;
 
 namespace Station.Modules.Signals.Api
 {

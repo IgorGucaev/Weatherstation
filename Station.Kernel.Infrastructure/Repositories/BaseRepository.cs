@@ -1,12 +1,11 @@
-﻿using Station.Common.Entities;
-using Station.Common.Infrastructure;
+﻿using System.Linq;
+using Station.Common.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using Station.Common.Infrastructure.Repositories;
 
 namespace Station.Kernel.Infrastructure.Repositories
 {
-
-    public class BaseRepository<TDbContext, TEntity, TKey> : CommonRepository<TDbContext, TEntity, TKey>
+    public class BaseRepository<TDbContext, TEntity, TKey> : CommonContextBasedRepository<TDbContext, TEntity, TKey>
          where TDbContext : DbContext, new()
          where TEntity : Entity<TKey>
     {

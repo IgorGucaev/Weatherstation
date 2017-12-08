@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Station.Common.Infrastructure.Services;
 
 namespace Station.Tests.Signals.Domain.Classes
 {

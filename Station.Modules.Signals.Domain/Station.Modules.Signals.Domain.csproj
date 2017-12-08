@@ -9,8 +9,4 @@
     <ProjectReference Include="..\Station.Kernel.Infrastructure\Station.Kernel.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Values\" />
-  </ItemGroup>
-
 </Project>

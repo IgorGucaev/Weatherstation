@@ -6,6 +6,11 @@ namespace Station.Tests.Signals.Domain
     [TestClass]
     public class SignalTest : DomainTest
     {
+        public SignalTest()
+            :base()
+        {
+
+        }
 
         [TestMethod]
         public void TestMethod1()
