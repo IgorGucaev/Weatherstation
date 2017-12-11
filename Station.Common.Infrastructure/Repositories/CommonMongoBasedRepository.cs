@@ -8,22 +8,27 @@ using System.Linq;
 
 namespace Station.Common.Infrastructure.Repositories
 {
-    public class CommonMongoBasedRepository<TDatabase, TEntity, TKey> : ICommonRepository<TEntity>
-        where TDatabase : IMongoDatabase
+    public class CommonMongoBasedRepository<TClient, TEntity, TKey> : ICommonRepository<TEntity>
+        where TClient : MongoClient
              where TEntity : Entity<TKey>
     {
-        public TDatabase Db { get; protected set; }
-        public IMongoClient Client { get; protected set; }
-        public string CollectionName { get; protected set; }
+        public IMongoDatabase Db { get; protected set; }
+        public TClient Client { get; protected set; }
+        private string CollectionName { get; set; }
 
-        public CommonMongoBasedRepository(TDatabase database, string collectionName)
+        public CommonMongoBasedRepository(TClient client)
         {
-            if (database == null)
-                throw new ArgumentNullException("database not exist");
+            // Define CollectionName
 
-            this.Db = database;
-            this.Client = database.Client;
-            this.CollectionName = collectionName;
+            this.CollectionName = "signals";
+
+            if (String.IsNullOrWhiteSpace(CollectionName))
+                throw new ArgumentNullException("collectionName is empty!");
+
+
+            this.Client = client ?? throw new ArgumentNullException("client not exist");
+
+            this.Db = this.Client.GetDatabase(this.CollectionName);
         }
 
         //public virtual IQueryable<TEntity> QueryAll

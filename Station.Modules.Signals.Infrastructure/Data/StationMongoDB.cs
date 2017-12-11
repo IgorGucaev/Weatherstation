@@ -1,11 +1,12 @@
 ﻿using MongoDB.Driver;
+using Station.Kernel.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Station.Modules.Signals.Infrastructure.Data
 {
-    public class StationMongoDB : ...
+    public class SignalMongoDB : KernelMongoClient
     {
         ////public StationDbContext()
         ////    : base(new DbContextOptions<CommonDbContext>())

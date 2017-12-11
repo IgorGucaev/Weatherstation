@@ -2,13 +2,15 @@
 using Station.Modules.Signals.Domain.Entities;
 using Station.Modules.Signals.Infrastructure.Data.Configurations.Bson;
 using Station.Common.Infrastructure.Repositories;
-using MongoDB.Driver;
+using Station.Modules.Signals.Infrastructure.Data;
+using Station.Common.Classes;
 
 namespace Station.Modules.Signals.Infrastructure.Repositories
 {
-    public class SignalMongoBasedRepository : CommonMongoBasedRepository<IMongoDatabase, Signal, long>, ISignalRepository
+    [DBAttribute(Common.Enums.DBType.NoSql)]
+    public class SignalMongoBasedRepository : CommonMongoBasedRepository<SignalMongoDB, Signal, long>, ISignalRepository
     {
-        public SignalMongoBasedRepository(IMongoDatabase database, string collectionName) : base(database, collectionName)
+        public SignalMongoBasedRepository(SignalMongoDB client) : base(client)
         {
             var bson = new SignalBsonConfiguration();
             bson.Configure();

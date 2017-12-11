@@ -16,7 +16,7 @@ namespace Station.Tests.Signals.Domain.Classes
             var builder = new ContainerBuilder();
 
             // регистрируем споставление типов
-            builder.RegisterType<StationUnitOfWork>().As<IStationUnitOfWork>();
+            builder.RegisterType<SignalMongoUnitOfWork>().As<IStationUnitOfWork>();
            // builder.RegisterType<SignalMongoBasedRepository>().As<ISignalRepository>();
             builder.RegisterType<SignalService>().As<ISignalService>();
 

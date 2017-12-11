@@ -1,14 +1,17 @@
-﻿using Station.Kernel.Infrastructure;
+﻿using Station.Common.Classes;
+using Station.Kernel.Infrastructure;
 using Station.Modules.Signals.Domain.Contracts;
 using Station.Modules.Signals.Infrastructure.Data;
 
 namespace Station.Modules.Signals.Infrastructure
 {
-    public class StationMongoUnitOfWork : KernelMongoUnitOfWork<StationMongoDB>, IStationUnitOfWork
+    [DBAttribute(Common.Enums.DBType.NoSql)]
+    public class SignalMongoUnitOfWork : KernelMongoUnitOfWork<SignalMongoDB>, IStationUnitOfWork
     {
-        protected StationDbContext _lversion;
+        protected SignalDbContext _lversion;
 
-        public StationMongoUnitOfWork() : base() { }
+        [DBAttribute(Common.Enums.DBType.NoSql)]
+        public SignalMongoUnitOfWork() : base() { }
 
         //protected LVDbContext LightVersion
         //{

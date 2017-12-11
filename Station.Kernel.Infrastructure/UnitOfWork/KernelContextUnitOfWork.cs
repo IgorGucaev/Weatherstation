@@ -1,47 +1,53 @@
-﻿using Station.Common.Interfaces;
+﻿using Station.Common.Exception;
+using Station.Common.Interfaces;
 using Station.Kernel.Infrastructure.Contracts;
+using Station.Kernel.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data;
-using Station.Kernel.Infrastructure.Data;
-using MongoDB.Driver;
+using System.Linq;
 using Station.Common.Enums;
 
 namespace Station.Kernel.Infrastructure
 {
-    public class KernelMongoUnitOfWork<TClient> : KernelUnitOfWork<TClient>, IKernelUnitOfWork
-        where TClient : KernelMongoClient, new()
+    public class KernelContextUnitOfWork<TDbContext> : KernelUnitOfWork<TDbContext>, IKernelUnitOfWork
+            where TDbContext : KernelDbContext, new()
     {
-        protected TClient _client;
+        protected List<IDbContextTransaction> _transactions;
 
-        protected TClient Client
+        protected TDbContext _dbContext;
+
+        protected TDbContext Context
         {
             get
             {
-                if (_client == null)
-                    _client = new TClient();
+                if (_dbContext == null)
+                    _dbContext = new TDbContext();
 
-                return _client;
+                return _dbContext;
             }
         }
 
-        public KernelMongoUnitOfWork()
+        public KernelContextUnitOfWork()
         {
             _repositories = new Dictionary<Type, IRepository>();
         }
 
-        protected override ICollection<TClient> GetAllContexts()
-        { return new TClient[] { this.Client }; }
+        protected override ICollection<TDbContext> GetAllContexts()
+        { return new TDbContext[] { this.Context }; }
 
         public virtual void SaveChanges()
         {
-            throw new NotImplementedException();
+            foreach (var context in this.GetAllContexts())
+                context.SaveChanges();
         }
 
         public virtual void Dispose()
         {
-            
+            foreach (var context in this.GetAllContexts())
+                context.Dispose();
         }
 
         //public virtual T GetRepository<T>() where T : IRepository
@@ -89,8 +95,9 @@ namespace Station.Kernel.Infrastructure
         //    else
         //        repositoryType = repositoryTypes.First();
 
+
         //    if (repositoryType == null)
-        //        repositoryType = typeof(KernelMongoUnitOfWork<>).Assembly.GetTypes().SingleOrDefault(t => interfaceType.IsAssignableFrom(t));
+        //        repositoryType = typeof(KernelContextUnitOfWork<>).Assembly.GetTypes().SingleOrDefault(t => interfaceType.IsAssignableFrom(t));
 
         //    if (repositoryType == null)
         //        return default(T);
@@ -147,17 +154,35 @@ namespace Station.Kernel.Infrastructure
 
         public void TransactionBegin(IsolationLevel isolationLevel = IsolationLevel.Serializable)
         {
-            throw new NotImplementedException();
+            if (_transactions != null && _transactions.Count > 0)
+                throw new CustomOperationException("Внимание, уже существуют созданые транзакции на данном контексте! Нельзя задублировать транзакции!");
+
+            _transactions = new List<IDbContextTransaction>();
+            foreach (var context in this.GetAllContexts())
+            {
+                var transaction = context.Database.BeginTransaction(isolationLevel);
+                _transactions.Add(transaction);
+            }
         }
 
         public void TransactionCommit()
         {
-            throw new NotImplementedException();
+            foreach (var transaction in _transactions)
+            {
+                transaction.Commit();
+                transaction.Dispose();
+            }
+            _transactions = null;
         }
 
         public void TransactionRollback()
         {
-            throw new NotImplementedException();
+            foreach (var transaction in _transactions)
+            {
+                transaction.Rollback();
+                transaction.Dispose();
+            }
+            _transactions = null;
         }
     }
 }

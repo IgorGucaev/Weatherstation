@@ -2,17 +2,16 @@
 using Station.Kernel.Infrastructure.Data;
 using Station.Modules.Signals.Infrastructure.Data.Configurations.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Station.Modules.Signals.Infrastructure.Data
 {
-    public partial class StationDbContext : KernelDbContext
+    public partial class SignalDbContext : KernelDbContext
     {
-        public StationDbContext()
+        public SignalDbContext()
             : base(new DbContextOptions<CommonDbContext>())
         { }
 
-        public StationDbContext(DbContextOptions<CommonDbContext> options)
+        public SignalDbContext(DbContextOptions<CommonDbContext> options)
             : base(options)
         { }
 
@@ -22,7 +21,6 @@ namespace Station.Modules.Signals.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new SignalConfiguration());
 
             base.OnModelCreating(modelBuilder);
-
         }
     }
 }

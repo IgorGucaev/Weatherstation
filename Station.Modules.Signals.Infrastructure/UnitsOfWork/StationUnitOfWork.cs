@@ -1,14 +1,16 @@
-﻿using Station.Kernel.Infrastructure;
+﻿using Station.Common.Classes;
+using Station.Kernel.Infrastructure;
 using Station.Modules.Signals.Domain.Contracts;
 using Station.Modules.Signals.Infrastructure.Data;
 
 namespace Station.Modules.Signals.Infrastructure
 {
-    public class StationUnitOfWork : KernelUnitOfWork<StationDbContext>, IStationUnitOfWork
+    [DBAttribute(Common.Enums.DBType.Sql)]
+    public class SignalUnitOfWork : KernelContextUnitOfWork<SignalDbContext>, IStationUnitOfWork
     {
-        protected StationDbContext _lversion;
+        protected SignalDbContext _lversion;
 
-        public StationUnitOfWork() : base() { }
+        public SignalUnitOfWork() : base() { }
 
         //protected LVDbContext LightVersion
         //{

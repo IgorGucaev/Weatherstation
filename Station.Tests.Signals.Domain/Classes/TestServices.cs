@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Station.Modules.Signals.Domain.Contracts;
 using Station.Modules.Signals.Domain.Contracts.Services;
-using Station.Modules.Signals.Domain.Services;
 using Station.Modules.Signals.Infrastructure;
 using System;
 
@@ -10,7 +9,7 @@ namespace Station.Tests.Signals.Domain.Classes
     public class TestServices : IDisposable
     {
         ISignalService _SignalService;
-        IStationUnitOfWork _stationUOW = new StationUnitOfWork();
+        IStationUnitOfWork _stationUOW = new SignalUnitOfWork();
 
         public ISignalService SignalService { get { return _SignalService; } }
 

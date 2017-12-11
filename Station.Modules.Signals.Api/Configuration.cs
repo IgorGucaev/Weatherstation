@@ -13,7 +13,7 @@ namespace Station.Modules.Signals.Api
         public override void Config(AppMode mode, IDependencyRegistrator container, DependencyScope scope = DependencyScope.Scope)
         {
             // Unit of Work
-            container.RegisterType<StationUnitOfWork, IStationUnitOfWork>(DependencyScope.None);
+            container.RegisterType<SignalUnitOfWork, IStationUnitOfWork>(DependencyScope.None);
 
             // Services
             container.RegisterType<SignalService, ISignalService>(scope);

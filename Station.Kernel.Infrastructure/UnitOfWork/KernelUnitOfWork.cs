@@ -1,54 +1,17 @@
-﻿using Station.Common.Exception;
-using Station.Common.Interfaces;
-using Station.Kernel.Infrastructure.Contracts;
-using Station.Kernel.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Station.Common.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using Station.Common.Enums;
 
 namespace Station.Kernel.Infrastructure
 {
-    public class KernelUnitOfWork<TDbContext> : IKernelUnitOfWork
-            where TDbContext : KernelDbContext, new()
+    public abstract class KernelUnitOfWork<T>
     {
         protected Dictionary<Type, IRepository> _repositories;
-        protected List<IDbContextTransaction> _transactions;
 
-        protected TDbContext _dbContext;
-
-        protected TDbContext Context
-        {
-            get
-            {
-                if (_dbContext == null)
-                    _dbContext = new TDbContext();
-
-                return _dbContext;
-            }
-        }
-
-        public KernelUnitOfWork()
-        {
-            _repositories = new Dictionary<Type, IRepository>();
-        }
-
-        protected virtual ICollection<DbContext> GetAllContexts()
-        { return new DbContext[] { this.Context }; }
-
-        public virtual void SaveChanges()
-        {
-            foreach (var context in this.GetAllContexts())
-                context.SaveChanges();
-        }
-
-        public virtual void Dispose()
-        {
-            foreach (var context in this.GetAllContexts())
-                context.Dispose();
-        }
+        protected virtual ICollection<T> GetAllContexts()
+        { throw new NotImplementedException("Context list not implemented!"); }
 
         public virtual T GetRepository<T>() where T : IRepository
         {
@@ -56,7 +19,46 @@ namespace Station.Kernel.Infrastructure
             if (_repositories.ContainsKey(interfaceType))
                 return (T)_repositories[interfaceType];
 
-            var repositoryType = this.GetType().Assembly.GetTypes().SingleOrDefault(t => interfaceType.IsAssignableFrom(t));
+            var repositoryTypes = this.GetType().Assembly.GetTypes().Where(t => interfaceType.IsAssignableFrom(t));
+            Type repositoryType = null;
+
+            // Если у меня несколько реализаций интерфейса репозитория, то нужный надо искать по custom attribute
+            // Идея такая- uow и репозитории помечаются атрибутом DBAttribute. Какой у uow, такой должен быть и у репозитория
+            if (repositoryTypes.Count() > 1)
+            {
+                var dbType = DBType.Unknown;
+                var uofCustomAttributes = this.GetType().GetCustomAttributes(false);
+                foreach (object uofAttrib in uofCustomAttributes)
+                {
+                    if ((uofAttrib is Station.Common.Classes.DBAttribute))
+                    {
+                        dbType = ((Station.Common.Classes.DBAttribute)uofAttrib).Type;
+                        break;
+                    }
+                }
+
+                foreach (var t in repositoryTypes)
+                {
+                    var customAttributes = t.GetCustomAttributes(true);
+                    foreach (object attrib in customAttributes)
+                    {
+                        if ((attrib is Station.Common.Classes.DBAttribute))
+                        {
+                            var type = ((Station.Common.Classes.DBAttribute)attrib).Type;
+
+                            if (type == dbType)
+                            {
+                                repositoryType = t;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+                repositoryType = repositoryTypes.First();
+
+
             if (repositoryType == null)
                 repositoryType = typeof(KernelUnitOfWork<>).Assembly.GetTypes().SingleOrDefault(t => interfaceType.IsAssignableFrom(t));
 
@@ -111,39 +113,6 @@ namespace Station.Kernel.Infrastructure
                 _repositories.Add(interfaceType, repository);
 
             return repository;
-        }
-
-        public void TransactionBegin(IsolationLevel isolationLevel = IsolationLevel.Serializable)
-        {
-            if (_transactions != null && _transactions.Count > 0)
-                throw new CustomOperationException("Внимание, уже существуют созданые транзакции на данном контексте! Нельзя задублировать транзакции!");
-
-            _transactions = new List<IDbContextTransaction>();
-            foreach (var context in this.GetAllContexts())
-            {
-                var transaction = context.Database.BeginTransaction(isolationLevel);
-                _transactions.Add(transaction);
-            }
-        }
-
-        public void TransactionCommit()
-        {
-            foreach (var transaction in _transactions)
-            {
-                transaction.Commit();
-                transaction.Dispose();
-            }
-            _transactions = null;
-        }
-
-        public void TransactionRollback()
-        {
-            foreach (var transaction in _transactions)
-            {
-                transaction.Rollback();
-                transaction.Dispose();
-            }
-            _transactions = null;
         }
     }
 }

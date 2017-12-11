@@ -1,15 +1,9 @@
 ﻿using Station.Common.Contracts;
-using Station.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Station.Kernel.Infrastructure.Contracts
 {
     public interface IKernelUnitOfWork : ICommonUnitOfWork
     {
-        T GetRepository<T>() where T : IRepository;
-
         //Activity FindActivity(object activityKey);
         //Activity CreateActivity(Activity activity);
 
