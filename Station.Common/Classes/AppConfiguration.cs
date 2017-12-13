@@ -1,12 +1,27 @@
-﻿using Station.Common.Contracts;
-using Station.Common.Enums;
+﻿using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace Station.Common.Classes
 {
-    public abstract class AppConfiguration
+    public class AppConfiguration
     {
-        public const DependencyScope DefaultDependencyScope = DependencyScope.Scope;
+        static IConfigurationRoot configuration;
 
-        public abstract void Config(AppMode mode, IDependencyRegistrator container, DependencyScope scope = DefaultDependencyScope);
+        static public IConfigurationRoot Configuration
+        {
+            get
+            {
+                if (configuration == null)
+                {
+                    var builder = new ConfigurationBuilder()
+                  .SetBasePath(Directory.GetCurrentDirectory())
+                  .AddJsonFile("appsettings.json");
+
+                    configuration = builder.Build();
+                }
+
+                return configuration;
+            }
+        }
     }
 }

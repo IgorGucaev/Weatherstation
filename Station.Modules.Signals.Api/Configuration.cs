@@ -8,7 +8,7 @@ using Station.Common.Contracts;
 
 namespace Station.Modules.Signals.Api
 {
-    public class SignalsApiConfiguration : AppConfiguration
+    public class SignalsApiConfiguration : ApiConfiguration
     {
         public override void Config(AppMode mode, IDependencyRegistrator container, DependencyScope scope = DependencyScope.Scope)
         {

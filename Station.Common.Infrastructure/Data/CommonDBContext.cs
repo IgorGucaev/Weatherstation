@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Station.Common.Enums;
 using Station.Common.Interfaces;
+using Station.Common.Classes;
 
 namespace Station.Common.Infrastructure.Data
 {
@@ -32,8 +33,7 @@ namespace Station.Common.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-          ////  IConfiguration config = new ConfigurationBuilder();
-          ////  optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
+            optionsBuilder.UseSqlServer(AppConfiguration.Configuration["SignalFromSql"]);
         }
 
         protected List<EntityEntry<T>> GetEntries<T>()

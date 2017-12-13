@@ -15,7 +15,7 @@ namespace Station.Tests.Signals.Domain
         [TestMethod]
         public void TestMethod1()
         {
-            var Signal = _services.SignalService.Get(121212);
+            var Signal = _services.SignalService.Get("5a31241b1f87770878ded71e");
         }
     }
 }
