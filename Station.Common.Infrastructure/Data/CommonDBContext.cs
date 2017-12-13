@@ -32,7 +32,8 @@ namespace Station.Common.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=5.178.84.50;Initial Catalog=InvoiceVerificationTest;User ID=rply;Password=ini9qwevbn.;Connection Timeout=60");
+          ////  IConfiguration config = new ConfigurationBuilder();
+          ////  optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
         }
 
         protected List<EntityEntry<T>> GetEntries<T>()
